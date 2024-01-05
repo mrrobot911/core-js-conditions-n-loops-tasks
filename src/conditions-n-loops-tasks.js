@@ -438,6 +438,7 @@ function sortByAsc(arr) {
       break;
     }
   }
+  return result;
 }
 
 /**
@@ -459,17 +460,23 @@ function sortByAsc(arr) {
  */
 function shuffleChar(str, iterations) {
   let answ = str;
-  for (let index = 0; index < iterations; index += 1) {
-    let newString = '';
+  let count = iterations;
+  while (count) {
+    let newOddString = '';
+    let newEvenString = '';
 
-    for (let i = 0; i < str.length; i += 2) {
-      newString += answ[i];
+    for (let i = 0; i < str.length; i += 1) {
+      if (i % 2 === 0) {
+        newEvenString += answ[i];
+      } else {
+        newOddString += answ[i];
+      }
     }
-    for (let i = 1; i < str.length; i += 2) {
-      newString += answ[i];
+    answ = newEvenString + newOddString;
+    count -= 1;
+    if (answ === str) {
+      count %= iterations - count;
     }
-
-    answ = newString;
   }
   return answ;
 }
@@ -491,8 +498,49 @@ function shuffleChar(str, iterations) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  const digits = [];
+  let temp = number;
+
+  while (temp > 0) {
+    const digit = temp % 10;
+    digits.unshift(digit);
+    temp = Math.floor(temp / 10);
+  }
+
+  let decreasingIndex = digits.length - 2;
+  while (
+    decreasingIndex >= 0 &&
+    digits[decreasingIndex] >= digits[decreasingIndex + 1]
+  ) {
+    decreasingIndex -= 1;
+  }
+
+  if (decreasingIndex < 0) {
+    return number;
+  }
+
+  let minDigit = digits.length - 1;
+  while (digits[minDigit] <= digits[decreasingIndex]) {
+    minDigit -= 1;
+  }
+
+  [digits[decreasingIndex], digits[minDigit]] = [
+    digits[minDigit],
+    digits[decreasingIndex],
+  ];
+
+  const sortedDigits = digits.slice(decreasingIndex + 1).sort((a, b) => a - b);
+
+  let result = 0;
+  for (let i = 0; i <= decreasingIndex; i += 1) {
+    result = result * 10 + digits[i];
+  }
+  for (let i = decreasingIndex + 1; i < digits.length; i += 1) {
+    result = result * 10 + sortedDigits[i - decreasingIndex - 1];
+  }
+
+  return result;
 }
 
 module.exports = {
