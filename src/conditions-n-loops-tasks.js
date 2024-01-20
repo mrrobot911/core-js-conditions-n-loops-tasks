@@ -495,30 +495,24 @@ function shuffleChar(str, iterations) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
-  // const reverse = (x) => Array.from(x).reduce((p, c) => [c, ...p], []);
-  // const minBiggerThanN = (arr, n) => arr.filter((e) => e > n).sort()[0];
-  // const remEl = (arr, e) => {
-  //   const r = arr.indexOf(e);
-  //   return arr.filter((_, i) => i !== r);
-  // };
-  // const seen = [];
-  // let result = 0;
-  // for (const [i, v] of number.entries()) {
-  //   const n = +v;
-  //   if (Math.max(n, ...seen) !== n) {
-  //     const right = number.slice(i + 1);
-  //     const swap = minBiggerThanN(seen, n);
-  //     const rem = remEl(seen, swap);
-  //     const rest = [n, ...rem].sort();
-  //     result = [...reverse(right), swap, ...rest].join('');
-  //     break;
-  //   } else {
-  //     seen.push(n);
-  //   }
-  // }
-  // return result;
+function getNearestBigger(number) {
+  const numArr = Array.from(String(number), Number);
+
+  for (let i = numArr.length - 2; i >= 0; i -= 1) {
+    if (numArr[i] < numArr[i + 1]) {
+      for (let j = numArr.length - 1; j > i; j -= 1) {
+        if (numArr[j] > numArr[i]) {
+          [numArr[i], numArr[j]] = [numArr[j], numArr[i]];
+          const tail = numArr.splice(i + 1);
+          tail.sort((a, b) => a - b);
+          numArr.push(...tail);
+          return +numArr.join('');
+        }
+      }
+    }
+  }
+
+  return -1;
 }
 
 module.exports = {
